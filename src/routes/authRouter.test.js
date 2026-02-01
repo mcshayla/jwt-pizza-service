@@ -45,7 +45,7 @@ test('register', async () => {
     expect(registerRes.body.user.email).toBe(newUser.email)
 });
 
-test('register missing fields', async () => {
+test('register with missing fields', async () => {
     const registerRes = await request(app).post('/api/auth').send({ email: 'test@test.com' });
     expect(registerRes.status).toBe(400);
     expect(registerRes.body.message).toMatch('required');

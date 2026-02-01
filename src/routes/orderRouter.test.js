@@ -55,27 +55,30 @@ test('addMenuItem Admin', async () => {
 
 });
 
-// test('register', async () => {
-//     const newUser = { name: 'test user', email: Math.random().toString(36).substring(2, 12) + '@test.com', password: 'a'};
-//     const registerRes = (await request(app).post('/api/auth').send(newUser));
-//     testUserAuthToken = registerRes.body.token;
-//     expect(registerRes.status).toBe(200);
-//     expectValidJwt(registerRes.body.token);
-//     expect(registerRes.body.user.email).toBe(newUser.email)
+test('getOrders', async () => {
+    const getOrdersRes = await request(app).get('/api/order').set('Authorization', `Bearer ${testUserAuthToken}`);
+    expect(getOrdersRes.status).toBe(200);
+    expect(getOrdersRes.body).toHaveProperty('dinerId');
+    expect(getOrdersRes.body).toHaveProperty('orders');
+    expect(Array.isArray(getOrdersRes.body.orders)).toBe(true);
+    expect(getOrdersRes.body).toHaveProperty('page');
+});
+
+test('createOrders', async () => {
+    const createOrderRes = await request(app).post('/api/order').set('Authorization', `Bearer ${testUserAuthToken}`)
+    .send({"franchiseId": 1, "storeId":1, "items":[{ "menuId": 1, "description": "Veggie", "price": 0.05 }]});
+    expect(createOrderRes.status).toBe(200);
+    expect(createOrderRes.body).toHaveProperty('order');
+    expect(createOrderRes.body).toHaveProperty('jwt');
+    expect(createOrderRes.body.order).toHaveProperty('id');
+});
+
+//refactor createORder or something because right now you can create an order for any franchiseId.
+
+// test('createOrders fail', async () => {
+//     const createOrderRes = await request(app).post('/api/order').set('Authorization', `Bearer ${testUserAuthToken}`)
+//     .send({"franchiseId": 9999, "storeId":9999, "items":[{ "menuId": 7, "description": "7Test", "price": 0.07 }]});
+//     expect(createOrderRes.status).toBe(500);
+   
 // });
 
-// test('register missing fields', async () => {
-//     const registerRes = await request(app).post('/api/auth').send({ email: 'test@test.com' });
-//     expect(registerRes.status).toBe(400);
-//     expect(registerRes.body.message).toMatch('required');
-// });
-
-// test('login with invalid password', async () => {
-//     const loginRes = await request(app).put('/api/auth').send({ email: testUser.email, password: 'wrong' });
-//     expect(loginRes.status).toBe(404);
-// });
-
-// test('logout without token', async () => {
-//     const logoutRes = await request(app).delete('/api/auth');
-//     expect(logoutRes.status).toBe(401);
-// });
