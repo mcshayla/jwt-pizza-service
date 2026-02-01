@@ -41,7 +41,7 @@ test('getUser', async () => {
 
 test('updateUser not admin', async () => {
     const updateUserRes = await request(app)
-      .put('/api/user/:userId')
+      .put('/api/user/notAdmin')
       .set('Authorization', `Bearer ${testUserAuthToken}`)
       .send({"name":"常用名字", "email":"a@jwt.com", "password":"admin"});
     expect(updateUserRes.status).toBe(403);
