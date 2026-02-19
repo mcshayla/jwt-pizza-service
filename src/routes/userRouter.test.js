@@ -79,7 +79,7 @@ test('list users', async () => {
   const listUsersRes = await request(app)
     .get('/api/user?page=1&limit=10&name=*')
     .set('Authorization', 'Bearer ' + adminAuthToken);
-    
+
   expect(listUsersRes.status).toBe(200);
   expect(listUsersRes.body).toHaveProperty('users');
   expect(listUsersRes.body.users.length).toBeGreaterThan(1);
@@ -97,5 +97,15 @@ async function registerUser(service) {
   return [registerRes.body.user, registerRes.body.token];
 }
 
-//implement and add tests for deleteUser and listUsers
+test('deleteUser', async () => {
+    const [user, token] = await registerUser(request(app));
+    const userId = user.id;
+
+    const deleteUserRes = await request(app)
+      .delete(`/api/user/${userId}`)
+      .set('Authorization', `Bearer ${token}`);
+      
+    expect(deleteUserRes.status).toBe(200);
+    expect(deleteUserRes.body.message).toMatch('user deleted');
+});
 
