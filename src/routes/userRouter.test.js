@@ -71,6 +71,8 @@ test('list users', async () => {
   // const [user, userToken] = await registerUser(request(app));
   const admin = await createAdminUser();
   await registerUser(request(app));
+  await registerUser(request(app));
+  await registerUser(request(app));
 
   const loginRes = await request(app).put('/api/auth').send(admin);
   const adminAuthToken = loginRes.body.token;
