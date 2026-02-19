@@ -62,6 +62,40 @@ test('updateUser as admin', async () => {
     expect(updateUserRes.body).toHaveProperty('token');
 });
 
+test('list users unauthorized', async () => {
+  const listUsersRes = await request(app).get('/api/user');
+  expect(listUsersRes.status).toBe(401);
+});
+
+test('list users', async () => {
+  // const [user, userToken] = await registerUser(request(app));
+  const admin = await createAdminUser();
+  await registerUser(request(app));
+
+  const loginRes = await request(app).put('/api/auth').send(admin);
+  const adminAuthToken = loginRes.body.token;
+  expectValidJwt(adminAuthToken);
+
+  const listUsersRes = await request(app)
+    .get('/api/user?page=1&limit=10&name=*')
+    .set('Authorization', 'Bearer ' + adminAuthToken);
+    
+  expect(listUsersRes.status).toBe(200);
+  expect(listUsersRes.body).toHaveProperty('users');
+  expect(listUsersRes.body.users.length).toBeGreaterThan(1);
+});
+
+async function registerUser(service) {
+  const testUser = {
+    name: 'pizza diner',
+    email: `${randomName()}@test.com`,
+    password: 'a',
+  };
+  const registerRes = await service.post('/api/auth').send(testUser);
+  registerRes.body.user.password = testUser.password;
+
+  return [registerRes.body.user, registerRes.body.token];
+}
 
 //implement and add tests for deleteUser and listUsers
 

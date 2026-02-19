@@ -55,6 +55,35 @@ class DB {
     }
   }
 
+  async getUserList(authUser, page = 0, limit = 10, nameFilter = '*') {
+    const connection = await this.getConnection();
+
+    const offset = page * limit;
+    nameFilter = nameFilter.replace(/\*/g, '%');
+
+    try {
+      if (!authUser?.isRole(Role.Admin)) {
+        throw new StatusCodeError('unauthorized', 403);
+      }
+
+      let users = await this.query(connection, `SELECT id, name, email FROM user WHERE name LIKE ? LIMIT ${limit + 1} OFFSET ${offset}`, [nameFilter]);
+
+      const more = users.length > limit;
+      if (more) {
+        users = users.slice(0, limit);
+      }
+
+      for (const user of users) {
+        const roles = await this.query(connection, `SELECT role, objectId FROM userRole WHERE userId=?`, [user.id]);
+        user.roles = roles;
+      }
+
+      return [users, more];
+    } finally {
+      connection.end();
+    }
+}
+
   async getUser(email, password) {
     const connection = await this.getConnection();
     try {
@@ -229,6 +258,8 @@ class DB {
       connection.end();
     }
   }
+
+
 
   async getUserFranchises(userId) {
     const connection = await this.getConnection();
