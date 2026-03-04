@@ -76,7 +76,7 @@ jobs:
         run: |
           mkdir dist
           cp Dockerfile dist
-          cp -r src/* dist
+          cp -r src dist
           cp *.json dist
           sed -i "s/root/${{ secrets.DB_USERNAME }}/g" dist/config.js
           sed -i "s/tempdbpassword/${{ secrets.DB_PASSWORD }}/g" dist/config.js
