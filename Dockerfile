@@ -13,4 +13,4 @@ COPY package*.json ./
 RUN npm ci 
 COPY . . 
 EXPOSE 80 
-CMD ["npm", "start"]
+CMD ["npm", "start", "80"]
