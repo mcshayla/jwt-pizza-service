@@ -357,7 +357,7 @@ class DB {
   }
 
   async getID(connection, key, value, table) {
-    logger.dbLogger(sql);
+    logger.dbLogger(`SELECT id FROM ${table} WHERE ${key}=?`);
     const [rows] = await connection.execute(`SELECT id FROM ${table} WHERE ${key}=?`, [value]);
     if (rows.length > 0) {
       return rows[0].id;
@@ -416,7 +416,7 @@ class DB {
   }
 
   async checkDatabaseExists(connection) {
-    logger.dbLogger(sql);
+    logger.dbLogger(`SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?`);
     const [rows] = await connection.execute(`SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?`, [config.db.connection.database]);
     return rows.length > 0;
   }
