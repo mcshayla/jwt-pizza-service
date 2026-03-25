@@ -94,6 +94,7 @@ orderRouter.post(
       diner: { id: req.user.id, name: req.user.name, email: req.user.email },
       order,                                                                                                                                                                                 response: j,
     };   
+    console.log('factoryLogger called', orderInfo); 
     logger.factoryLogger(orderInfo);
     if (r.ok) {
       const revenue = orderReq.items.reduce((sum, item) => sum + item.price, 0);
