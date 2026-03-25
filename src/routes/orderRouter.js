@@ -4,6 +4,7 @@ const { Role, DB } = require('../database/database.js');
 const { authRouter } = require('./authRouter.js');
 const { asyncHandler, StatusCodeError } = require('../endpointHelper.js');
 const metrics = require('../metrics.js');
+const logger = require('../logger.js');
 
 const orderRouter = express.Router();
 
@@ -88,7 +89,12 @@ orderRouter.post(
       body: JSON.stringify({ diner: { id: req.user.id, name: req.user.name, email: req.user.email }, order }),
     });
     const pizzaLatency = Date.now() - start;
-    const j = await r.json();
+    const j = await r.json();                                                                                                                                                          
+    const orderInfo = {
+      diner: { id: req.user.id, name: req.user.name, email: req.user.email },
+      order,                                                                                                                                                                                 response: j,
+    };   
+    logger.factoryLogger(orderInfo);
     if (r.ok) {
       const revenue = orderReq.items.reduce((sum, item) => sum + item.price, 0);
       metrics.pizzaPurchase(true, pizzaLatency, revenue);
