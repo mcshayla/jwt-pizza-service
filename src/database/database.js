@@ -96,7 +96,7 @@ class DB {
 
       const roleResult = await this.query(connection, `SELECT * FROM userRole WHERE userId=?`, [user.id]);
       const roles = roleResult.map((r) => {
-        return { objectId: r.objectId || undefined, role: r.role };
+        return { objectId: r.objectId || null, role: r.role };
       });
 
       return { ...user, roles: roles, password: undefined };

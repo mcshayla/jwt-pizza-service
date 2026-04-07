@@ -715,7 +715,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "active_users_ratio{job=\"jwt-pizza-service\"}",
+          "expr": "active_users{job=\"jwt-pizza-service\"}",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
