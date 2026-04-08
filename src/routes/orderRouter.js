@@ -89,11 +89,18 @@ orderRouter.post(
       body: JSON.stringify({ diner: { id: req.user.id, name: req.user.name, email: req.user.email }, order }),
     });
     const pizzaLatency = Date.now() - start;
-    const j = await r.json();                                                                                                                                                          
+    let j = {};
+    try {
+      j = await r.json();
+    } catch (e) {
+      j = { error: 'Failed to parse factory response' };
+    }
+
     const orderInfo = {
       diner: { id: req.user.id, name: req.user.name, email: req.user.email },
-      order,                                                                                                                                                                                 response: j,
-    };   
+      order,
+      response: r.ok ? j : { error: 'Factory returned error', status: r.status },
+    }; 
     console.log('factoryLogger called', orderInfo); 
     logger.factoryLogger(orderInfo);
     if (r.ok) {
