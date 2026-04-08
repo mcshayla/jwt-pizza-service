@@ -92,7 +92,7 @@ orderRouter.post(
     let j = {};
     try {
       j = await r.json();
-    } catch (_e) {
+    } catch {
       j = { error: 'Failed to parse factory response' };
     }
 
