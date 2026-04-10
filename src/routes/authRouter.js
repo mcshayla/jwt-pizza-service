@@ -108,8 +108,8 @@ authRouter.delete(
 );
 
 async function setAuth(user) {
-  const payload = {id: user.id, roles: user.roles };
-  const token = jwt.sign(payload, config.jwtSecret);
+  // const payload = {id: user.id, roles: user.roles };
+  const token = jwt.sign(user, config.jwtSecret);
   await DB.loginUser(user.id, token);
   return token;
 }
