@@ -122,8 +122,8 @@ class DB {
         params.push(`name='${name}'`);
       }
       if (params.length > 0) {
-        const query = `UPDATE user SET ${params.join(', ')} WHERE id=${userId}`;
-        await this.query(connection, query);
+        const query = `UPDATE user SET ${params.join(', ')} WHERE id=?`;
+        await this.query(connection, query, [userId]);
       }
       return this.getUser(email, password);
     } finally {
@@ -403,10 +403,6 @@ class DB {
           await connection.query(statement);
         }
 
-        if (!dbExists) {
-          const defaultAdmin = { name: '常用名字', email: 'a@jwt.com', password: 'admin', roles: [{ role: Role.Admin }] };
-          this.addUser(defaultAdmin);
-        }
       } finally {
         connection.end();
       }
